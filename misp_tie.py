@@ -9,7 +9,7 @@ from pymisp import ExpandedPyMISP
 from dxlclient.client import DxlClient
 from dxlclient.client_config import DxlClientConfig
 from dxltieclient import TieClient
-from dxltieclient.constants import TrustLevel
+from dxltieclient.constants import HashType, TrustLevel
 
 requests.packages.urllib3.disable_warnings()
 
@@ -30,7 +30,7 @@ dxl_config = 'path to dxlclient.config'
 # TrustLevel.MOST_LIKELY_MALICIOUS
 # TrustLevel.KNOWN_MALICIOUS
 # TrustLevel.NOT_SET
-tie_rep = TrustLevel.MOST_LIKELY_MALICIOUS
+tie_rep = TrustLevel.KNOWN_MALICIOUS
 
 class MISP():
 
@@ -77,11 +77,11 @@ class TIE():
                 client.connect()
                 tie_client = TieClient(client)
 
-                tie_client.set_external_file_reputation(
+                tie_client.set_file_reputation(
                     self.tie_rep,
-                    {'md5': hash},
+                    {HashType.MD5: hash},
                     filename='MISP Hash {0}'.format(str(eventid)),
-                    comment='External Reputation set via OpenDXL')
+                    comment='External Reputation set via MISP-TIE(OpenDXL)')
 
                 print('SUCCESS: Successfully pushed MD5 {0} to TIE.'.format(str(hash)))
 
