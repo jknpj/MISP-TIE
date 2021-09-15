@@ -16,7 +16,7 @@ requests.packages.urllib3.disable_warnings()
 misp_url = 'https://1.1.1.1'
 misp_key = 'apikey'
 misp_verifycert = False
-misp_tag = 'TIE Set Reputation'
+misp_tag = 'MISP-TIE Verified'
 
 dxl_config = 'path to dxlclient.config'
 
@@ -41,7 +41,7 @@ class MISP():
 
     def get_event(self):
         try:
-            events = self.misp.search(tags=misp_tag)
+            events = self.misp.search(tags=!misp_tag)
             for event in events:
                 for attributes in event['Event']['Attribute']:
                     if attributes['type'] == 'md5':
@@ -56,7 +56,7 @@ class MISP():
                                   .format(str(attributes['value']), str(event['Event']['id'])))
                             self.tie.set_rep(event['Event']['id'], attributes['value'])
 
-                self.misp.untag(event['Event']['uuid'], misp_tag)
+                self.misp.tag(event['Event']['uuid'], misp_tag)
 
         except Exception as e:
             exc_type, exc_obj, exc_tb = sys.exc_info()
@@ -81,7 +81,7 @@ class TIE():
                     self.tie_rep,
                     {HashType.MD5: hash},
                     filename='MISP Hash {0}'.format(str(eventid)),
-                    comment='External Reputation set via MISP-TIE(OpenDXL)')
+                    comment='External Reputation set via MISP-TIE(OpenDXL)GIT')
 
                 print('SUCCESS: Successfully pushed MD5 {0} to TIE.'.format(str(hash)))
 
